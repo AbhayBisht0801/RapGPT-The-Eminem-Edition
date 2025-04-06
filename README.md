@@ -26,8 +26,36 @@ This project features a fine-tuned Language Model (LLM) trained to generate rap 
 - **Epochs**: (Add how many you trained, e.g., 3 epochs)
 - **Loss**: (Add your final training loss if available)
 
----
 
+---
+---
+### For Inferencing this model
+```python
+if True:
+  model,tokenizer=FastLanguageModel.from_pretrained(
+      model_name='ababhay08/em_rap_model',
+      max_seq_length=max_seq_length,
+      dtype=dtype,
+      load_in_4bit=load_in_4bit,
+  )
+  FastLanguageModel.for_inference(model)
+  prompt = f"### Instruction:\nWrite a rap like Eminem titled Enemies\n\n### Response:\n"
+  inputs = tokenizer([prompt], return_tensors="pt").to("cuda")
+
+  outputs = model.generate(
+      input_ids=inputs.input_ids,
+      attention_mask=inputs.attention_mask,
+      max_new_tokens=300,
+      do_sample=True,  # important for creativity
+      top_k=50,        # control diversity
+      top_p=0.95,
+      temperature=1.0,
+      repetition_penalty=1.2,
+  )
+  response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+  print(response)
+```
+    
 
 ---
 
